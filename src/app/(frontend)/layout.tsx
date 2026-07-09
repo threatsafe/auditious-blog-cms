@@ -14,10 +14,15 @@ import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { draftMode } from 'next/headers'
 
 import './globals.css'
+import { getBlogFont } from '@/utilities/blogFont'
+import { getCachedGlobal } from '@/utilities/getGlobals'
 import { getServerSideURL } from '@/utilities/getURL'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { isEnabled } = await draftMode()
+
+  const settings = await getCachedGlobal('theme-settings', 0)().catch(() => null)
+  const blogFont = getBlogFont(settings?.fontFamily)
 
   return (
     <html className={cn(GeistSans.variable, GeistMono.variable)} lang="en" suppressHydrationWarning>
@@ -25,8 +30,19 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <InitTheme />
         <link href="/favicon.ico" rel="icon" sizes="32x32" />
         <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
+        {blogFont.googleHref && (
+          <>
+            <link href="https://fonts.googleapis.com" rel="preconnect" />
+            <link crossOrigin="anonymous" href="https://fonts.gstatic.com" rel="preconnect" />
+            <link href={blogFont.googleHref} rel="stylesheet" />
+          </>
+        )}
       </head>
-      <body>
+      <body
+        {...(blogFont.stack
+          ? { style: { '--blog-font': blogFont.stack } as React.CSSProperties }
+          : {})}
+      >
         <Providers>
           <AdminBar
             adminBarProps={{

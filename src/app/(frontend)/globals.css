@@ -222,3 +222,89 @@ html[data-theme='dark'],
 html[data-theme='light'] {
   opacity: initial;
 }
+
+/* When a post renders with a custom full-page HTML theme, the theme owns the
+   whole page, so the site's own header and footer are hidden. */
+body:has([data-themed-post]) [data-site-header],
+body:has([data-themed-post]) [data-site-footer] {
+  display: none;
+}
+
+/* Blog article typography. Scoped to `.article-body` so it reliably overrides
+   the global heading reset and gives blog-appropriate sizes/spacing. The font
+   family is driven by the admin Theme Settings selection via --blog-font. */
+.article-body {
+  font-family: var(--blog-font, inherit);
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: var(--foreground);
+}
+
+.article-body > :first-child {
+  margin-top: 0;
+}
+
+.article-body h1 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  margin: 2.5rem 0 1rem;
+  color: var(--foreground);
+}
+
+.article-body h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 2rem 0 0.75rem;
+  color: var(--foreground);
+}
+
+.article-body h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 1.5rem 0 0.5rem;
+  color: var(--foreground);
+}
+
+.article-body h4 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 1.25rem 0 0.5rem;
+  color: var(--foreground);
+}
+
+.article-body p {
+  margin: 0 0 1.25rem;
+}
+
+.article-body ul,
+.article-body ol {
+  margin: 0 0 1.25rem;
+  padding-left: 1.5rem;
+}
+
+.article-body ul {
+  list-style: disc;
+}
+
+.article-body ol {
+  list-style: decimal;
+}
+
+.article-body li {
+  margin-bottom: 0.5rem;
+}
+
+.article-body a {
+  color: #059669;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.article-body strong {
+  font-weight: 700;
+  color: var(--foreground);
+}

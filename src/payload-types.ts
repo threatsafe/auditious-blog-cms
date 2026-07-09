@@ -72,6 +72,8 @@ export interface Config {
     media: Media;
     categories: Category;
     users: User;
+    themes: Theme;
+    subscribers: Subscriber;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -94,6 +96,8 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    themes: ThemesSelect<false> | ThemesSelect<true>;
+    subscribers: SubscribersSelect<false> | SubscribersSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -112,10 +116,12 @@ export interface Config {
   globals: {
     header: Header;
     footer: Footer;
+    'theme-settings': ThemeSetting;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
+    'theme-settings': ThemeSettingsSelect<false> | ThemeSettingsSelect<true>;
   };
   locale: null;
   widgets: {
@@ -124,6 +130,7 @@ export interface Config {
   user: User;
   jobs: {
     tasks: {
+      notifySubscribers: TaskNotifySubscribers;
       schedulePublish: TaskSchedulePublish;
       inline: {
         input: unknown;
@@ -228,7 +235,11 @@ export interface Post {
   id: number;
   title: string;
   heroImage?: (number | null) | Media;
-  content: {
+  /**
+   * Choose how to author the post body: the rich text editor, or raw HTML (paste or upload an .html file).
+   */
+  contentType?: ('richText' | 'html') | null;
+  content?: {
     root: {
       type: string;
       children: {
@@ -242,9 +253,23 @@ export interface Post {
       version: number;
     };
     [k: string]: unknown;
-  };
+  } | null;
+  /**
+   * Raw HTML for the post body. Upload an .html file above or paste/edit the HTML here.
+   */
+  htmlContent?: string | null;
   relatedPosts?: (number | Post)[] | null;
   categories?: (number | Category)[] | null;
+  /**
+   * Rendered by custom HTML themes in the FAQ section via {question} / {answer}.
+   */
+  faqs?:
+    | {
+        question: string;
+        answer: string;
+        id?: string | null;
+      }[]
+    | null;
   meta?: {
     title?: string | null;
     /**
@@ -254,6 +279,18 @@ export interface Post {
     description?: string | null;
   };
   publishedAt?: string | null;
+  /**
+   * Email active newsletter subscribers when this post is first published. Sends only once, on the initial publish.
+   */
+  notifySubscribersOnPublish?: boolean | null;
+  /**
+   * When the publish notification batch was sent.
+   */
+  subscriberNotificationSentAt?: string | null;
+  /**
+   * Number of subscribers emailed for this post.
+   */
+  subscriberNotificationRecipientCount?: number | null;
   authors?: (number | User)[] | null;
   populatedAuthors?:
     | {
@@ -420,6 +457,28 @@ export interface Category {
 export interface User {
   id: number;
   name?: string | null;
+  /**
+   * Role/title shown in the author card. Theme token: {author_designation}
+   */
+  designation?: string | null;
+  /**
+   * Short author bio. Theme token: {author_bio}
+   */
+  bio?: string | null;
+  /**
+   * Author photo. Theme token: {author_avatar}
+   */
+  avatar?: (number | null) | Media;
+  /**
+   * Repeated in the author card via {social_url} / {social_label}.
+   */
+  socialLinks?:
+    | {
+        label?: string | null;
+        url?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -782,6 +841,43 @@ export interface Form {
   createdAt: string;
 }
 /**
+ * Custom full-page HTML themes for blog posts. Only one theme can be active at a time; the active theme is applied to every post.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "themes".
+ */
+export interface Theme {
+  id: number;
+  name: string;
+  /**
+   * When enabled, this theme is applied to all blog posts. Enabling it automatically turns off any other active theme.
+   */
+  active?: boolean | null;
+  /**
+   * Full HTML document for the post page. Placeholders: {{title}}, {{content}}, {{excerpt}}, {{publishedAt}}, {{author}}, {{heroImage}}, {{categories}}, {{slug}}, {{url}}, {{siteName}}.
+   */
+  template: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subscribers".
+ */
+export interface Subscriber {
+  id: number;
+  email: string;
+  status: 'pending' | 'active' | 'unsubscribed';
+  subscribedAt?: string | null;
+  confirmedAt?: string | null;
+  unsubscribedAt?: string | null;
+  lastEmailSentAt?: string | null;
+  confirmationTokenHash?: string | null;
+  confirmationTokenExpiresAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
@@ -924,7 +1020,7 @@ export interface PayloadJob {
     | {
         executedAt: string;
         completedAt: string;
-        taskSlug: 'inline' | 'schedulePublish';
+        taskSlug: 'inline' | 'notifySubscribers' | 'schedulePublish';
         taskID: string;
         input?:
           | {
@@ -957,7 +1053,7 @@ export interface PayloadJob {
         id?: string | null;
       }[]
     | null;
-  taskSlug?: ('inline' | 'schedulePublish') | null;
+  taskSlug?: ('inline' | 'notifySubscribers' | 'schedulePublish') | null;
   queue?: string | null;
   waitUntil?: string | null;
   processing?: boolean | null;
@@ -990,6 +1086,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'users';
         value: number | User;
+      } | null)
+    | ({
+        relationTo: 'themes';
+        value: number | Theme;
+      } | null)
+    | ({
+        relationTo: 'subscribers';
+        value: number | Subscriber;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -1195,9 +1299,18 @@ export interface FormBlockSelect<T extends boolean = true> {
 export interface PostsSelect<T extends boolean = true> {
   title?: T;
   heroImage?: T;
+  contentType?: T;
   content?: T;
+  htmlContent?: T;
   relatedPosts?: T;
   categories?: T;
+  faqs?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
   meta?:
     | T
     | {
@@ -1206,6 +1319,9 @@ export interface PostsSelect<T extends boolean = true> {
         description?: T;
       };
   publishedAt?: T;
+  notifySubscribersOnPublish?: T;
+  subscriberNotificationSentAt?: T;
+  subscriberNotificationRecipientCount?: T;
   authors?: T;
   populatedAuthors?:
     | T
@@ -1339,6 +1455,16 @@ export interface CategoriesSelect<T extends boolean = true> {
  */
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
+  designation?: T;
+  bio?: T;
+  avatar?: T;
+  socialLinks?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -1355,6 +1481,33 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "themes_select".
+ */
+export interface ThemesSelect<T extends boolean = true> {
+  name?: T;
+  active?: T;
+  template?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subscribers_select".
+ */
+export interface SubscribersSelect<T extends boolean = true> {
+  email?: T;
+  status?: T;
+  subscribedAt?: T;
+  confirmedAt?: T;
+  unsubscribedAt?: T;
+  lastEmailSentAt?: T;
+  confirmationTokenHash?: T;
+  confirmationTokenExpiresAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1691,6 +1844,43 @@ export interface Footer {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "theme-settings".
+ */
+export interface ThemeSetting {
+  id: number;
+  /**
+   * Font used for blog article content.
+   */
+  fontFamily?: ('default' | 'georgia' | 'inter' | 'lora' | 'merriweather' | 'system') | null;
+  /**
+   * Theme token: {newsletter_heading}
+   */
+  newsletterHeading?: string | null;
+  /**
+   * Theme token: {newsletter_description}
+   */
+  newsletterDescription?: string | null;
+  /**
+   * Theme token: {cta_heading}
+   */
+  ctaHeading?: string | null;
+  /**
+   * Theme token: {cta_subheading}
+   */
+  ctaSubheading?: string | null;
+  /**
+   * Theme token: {cta_button_label}
+   */
+  ctaButtonLabel?: string | null;
+  /**
+   * Theme token: {cta_url}
+   */
+  ctaButtonUrl?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
@@ -1737,6 +1927,22 @@ export interface FooterSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "theme-settings_select".
+ */
+export interface ThemeSettingsSelect<T extends boolean = true> {
+  fontFamily?: T;
+  newsletterHeading?: T;
+  newsletterDescription?: T;
+  ctaHeading?: T;
+  ctaSubheading?: T;
+  ctaButtonLabel?: T;
+  ctaButtonUrl?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "collections_widget".
  */
 export interface CollectionsWidget {
@@ -1744,6 +1950,18 @@ export interface CollectionsWidget {
     [k: string]: unknown;
   };
   width: 'full';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskNotifySubscribers".
+ */
+export interface TaskNotifySubscribers {
+  input: {
+    postId: number;
+  };
+  output: {
+    recipientCount?: number | null;
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
