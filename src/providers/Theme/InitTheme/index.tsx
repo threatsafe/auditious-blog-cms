@@ -11,15 +11,8 @@ export const InitTheme: React.FC = () => {
         __html: `
   (function () {
     function getImplicitPreference() {
-      var mediaQuery = '(prefers-color-scheme: dark)'
-      var mql = window.matchMedia(mediaQuery)
-      var hasImplicitPreference = typeof mql.matches === 'boolean'
-
-      if (hasImplicitPreference) {
-        return mql.matches ? 'dark' : 'light'
-      }
-
-      return null
+      // Always resolve to the light theme regardless of the OS-level color scheme.
+      return 'light'
     }
 
     function themeIsValid(theme) {

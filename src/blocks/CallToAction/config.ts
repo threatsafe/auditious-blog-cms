@@ -4,9 +4,11 @@ import {
   FixedToolbarFeature,
   HeadingFeature,
   InlineToolbarFeature,
+  TextStateFeature,
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
 
+import { FONT_SIZE_STATES } from '../../fields/fontSizes'
 import { linkGroup } from '../../fields/linkGroup'
 
 export const CallToAction: Block = {
@@ -23,6 +25,7 @@ export const CallToAction: Block = {
             HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
             FixedToolbarFeature(),
             InlineToolbarFeature(),
+            TextStateFeature({ state: { fontSize: FONT_SIZE_STATES } }),
           ]
         },
       }),

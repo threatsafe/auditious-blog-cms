@@ -12,6 +12,7 @@ import {
 } from '@payloadcms/richtext-lexical/react'
 
 import { CodeBlock, CodeBlockProps } from '@/blocks/Code/Component'
+import { fontSizeFromState } from '@/fields/fontSizes'
 
 import type {
   BannerBlock as BannerBlockProps,
@@ -32,12 +33,19 @@ const internalDocToHref = ({ linkNode }: { linkNode: SerializedLinkNode }) => {
     throw new Error('Expected value to be an object')
   }
   const slug = value.slug
-  return relationTo === 'posts' ? `/posts/${slug}` : `/${slug}`
+  return relationTo === 'posts' ? `/blogs/${slug}` : `/${slug}`
 }
 
 const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) => ({
   ...defaultConverters,
   ...LinkJSXConverter({ internalDocToHref }),
+  // Render the font-size chosen in the editor (stored as a text-node state).
+  text: (args) => {
+    const convert = defaultConverters.text as ((a: unknown) => React.ReactNode) | undefined
+    const rendered = convert ? convert(args) : args.node.text
+    const fontSize = fontSizeFromState((args.node as { $?: { fontSize?: string } }).$?.fontSize)
+    return fontSize ? <span style={{ fontSize }}>{rendered}</span> : rendered
+  },
   blocks: {
     banner: ({ node }) => <BannerBlock className="col-start-2 mb-4" {...node.fields} />,
     mediaBlock: ({ node }) => (

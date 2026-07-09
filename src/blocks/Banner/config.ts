@@ -3,8 +3,11 @@ import type { Block } from 'payload'
 import {
   FixedToolbarFeature,
   InlineToolbarFeature,
+  TextStateFeature,
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
+
+import { FONT_SIZE_STATES } from '../../fields/fontSizes'
 
 export const Banner: Block = {
   slug: 'banner',
@@ -26,7 +29,12 @@ export const Banner: Block = {
       type: 'richText',
       editor: lexicalEditor({
         features: ({ rootFeatures }) => {
-          return [...rootFeatures, FixedToolbarFeature(), InlineToolbarFeature()]
+          return [
+            ...rootFeatures,
+            FixedToolbarFeature(),
+            InlineToolbarFeature(),
+            TextStateFeature({ state: { fontSize: FONT_SIZE_STATES } }),
+          ]
         },
       }),
       label: false,

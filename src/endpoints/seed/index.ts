@@ -20,7 +20,7 @@ const collections: CollectionSlug[] = [
   'search',
 ]
 
-const globals: GlobalSlug[] = ['header', 'footer']
+const globals: Exclude<GlobalSlug, 'theme-settings'>[] = ['header', 'footer']
 
 const categories = ['Technology', 'News', 'Finance', 'Design', 'Software', 'Engineering']
 
@@ -226,7 +226,7 @@ export const seed = async ({
             link: {
               type: 'custom',
               label: 'Posts',
-              url: '/posts',
+              url: '/blogs',
             },
           },
           {

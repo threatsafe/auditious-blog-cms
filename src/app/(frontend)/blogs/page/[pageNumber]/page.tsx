@@ -1,6 +1,6 @@
 import type { Metadata } from 'next/types'
 
-import { CollectionArchive } from '@/components/CollectionArchive'
+import { BlogList } from '@/components/BlogList'
 import { PageRange } from '@/components/PageRange'
 import { Pagination } from '@/components/Pagination'
 import configPromise from '@payload-config'
@@ -36,10 +36,9 @@ export default async function Page({ params: paramsPromise }: Args) {
   return (
     <div className="pt-24 pb-24">
       <PageClient />
-      <div className="container mb-16">
-        <div className="prose dark:prose-invert max-w-none">
-          <h1>Posts</h1>
-        </div>
+      <div className="container mb-10">
+        <p className="mb-3 text-sm font-semibold uppercase tracking-wider text-green-700">Blog</p>
+        <h1 className="text-4xl font-bold tracking-tight md:text-5xl">All blogs</h1>
       </div>
 
       <div className="container mb-8">
@@ -51,7 +50,7 @@ export default async function Page({ params: paramsPromise }: Args) {
         />
       </div>
 
-      <CollectionArchive posts={posts.docs} />
+      <BlogList posts={posts.docs} />
 
       <div className="container">
         {posts?.page && posts?.totalPages > 1 && (
@@ -65,7 +64,7 @@ export default async function Page({ params: paramsPromise }: Args) {
 export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
   const { pageNumber } = await paramsPromise
   return {
-    title: `Payload Website Template Posts Page ${pageNumber || ''}`,
+    title: `Blog — Auditious${pageNumber ? ` (Page ${pageNumber})` : ''}`,
   }
 }
 
