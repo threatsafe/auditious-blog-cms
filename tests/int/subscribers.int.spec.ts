@@ -255,13 +255,23 @@ describe('Subscribers subscription workflow', () => {
 
     await notifySubscribersTask.handler({ input: { postId: post.id }, req: makeReq({}) } as any)
 
-    expect(payload.sendEmail).toHaveBeenCalledTimes(2)
+    // The DB may hold other real active subscribers, so assert by recipient
+    // identity rather than a global count: both active test addresses are
+    // emailed, and the pending/unsubscribed ones are not.
+    const sendMock = payload.sendEmail as unknown as ReturnType<typeof vi.fn>
+    const recipients = sendMock.mock.calls.map((c) => (c[0] as { to: string }).to)
+    expect(recipients).toContain(email('active1'))
+    expect(recipients).toContain(email('active2'))
+    expect(recipients).not.toContain(email('pending1'))
+    expect(recipients).not.toContain(email('unsub1'))
+
     const refreshed = await payload.findByID({
       collection: 'posts',
       id: post.id,
       overrideAccess: true,
     })
-    expect(refreshed.subscriberNotificationRecipientCount).toBe(2)
+    // Recorded count matches the number of emails actually sent this run.
+    expect(refreshed.subscriberNotificationRecipientCount).toBe(sendMock.mock.calls.length)
     expect(refreshed.subscriberNotificationSentAt).toBeTruthy()
 
     // Re-running must not resend (idempotent).

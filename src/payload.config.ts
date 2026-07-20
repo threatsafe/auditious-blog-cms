@@ -25,19 +25,24 @@ const dirname = path.dirname(filename)
 
 export default buildConfig({
   admin: {
-    // Force the admin panel to the light (white) theme.
     theme: 'light',
+    meta: {
+      titleSuffix: '- Auditious Blog',
+      // Use the Auditious favicon in admin browser tabs (replaces Payload's default).
+      icons: [
+        {
+          rel: 'icon',
+          type: 'image/x-icon',
+          url: '/favicon.ico',
+        },
+      ],
+    },
     components: {
-      // Replace the default Payload logo/icon with the Auditious logo (public/logo.png).
       graphics: {
         Logo: '@/components/AdminLogo',
         Icon: '@/components/AdminIcon',
       },
-      // The `BeforeLogin` component renders a message that you see while logging into your admin panel.
-      // Feel free to delete this at any time. Simply remove the line below.
       beforeLogin: ['@/components/BeforeLogin'],
-      // The `BeforeDashboard` component renders the 'welcome' block that you see after logging into your admin panel.
-      // Feel free to delete this at any time. Simply remove the line below.
       beforeDashboard: ['@/components/BeforeDashboard'],
     },
     importMap: {
@@ -105,18 +110,11 @@ export default buildConfig({
 
         const secret = process.env.CRON_SECRET
         if (!secret) return false
-
-        // If there is no logged in user, then check
-        // for the Vercel Cron secret to be present as an
-        // Authorization header:
         const authHeader = req.headers.get('authorization')
         return authHeader === `Bearer ${secret}`
       },
     },
     tasks: [notifySubscribersTask],
-    // Drain the queue from the running server in development so post-publish
-    // notifications send without an external cron. Production relies on the
-    // CRON_SECRET-protected /api/payload-jobs/run endpoint instead.
     autoRun: [{ cron: '* * * * *', limit: 10, queue: 'default' }],
     shouldAutoRun: async () => process.env.NODE_ENV === 'development',
   },

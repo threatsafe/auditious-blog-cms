@@ -11,6 +11,7 @@ import { hero } from '@/heros/config'
 import { slugField } from 'payload'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
+import { seoControlFields } from '../../fields/seoControls'
 import { revalidateDelete, revalidatePage } from './hooks/revalidatePage'
 
 import {
@@ -106,6 +107,7 @@ export const Pages: CollectionConfig<'pages'> = {
               titlePath: 'meta.title',
               descriptionPath: 'meta.description',
             }),
+            ...seoControlFields,
           ],
         },
       ],

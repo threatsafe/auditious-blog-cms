@@ -12,7 +12,9 @@ import type { Post } from '@/payload-types'
 import { PostHeader } from '@/components/PostHeader'
 import { PostFaq } from '@/components/PostFaq'
 import { BlogSidebar } from '@/components/BlogSidebar'
+import { JsonLd } from '@/components/JsonLd'
 import { generateMeta } from '@/utilities/generateMeta'
+import { getPostJsonLd } from '@/utilities/structuredData'
 import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 import { getActiveTheme } from '@/utilities/getActiveTheme'
@@ -57,6 +59,14 @@ export default async function Post({ params: paramsPromise }: Args) {
 
   if (!post) return <PayloadRedirects url={url} />
 
+  // Structured data (JSON-LD): Article + Breadcrumb + FAQ. Computed once and
+  // rendered in both the themed and native layouts below.
+  const postUrl = `${getServerSideURL()}/blogs/${post.slug}`
+  const faqs = (Array.isArray(post.faqs) ? post.faqs : [])
+    .filter((f) => f && (f.question || f.answer))
+    .map((f) => ({ answer: f.answer || '', question: f.question || '' }))
+  const jsonLd = getPostJsonLd(post, { url: postUrl, faqs })
+
   // If an admin has activated a custom HTML theme, it owns the full page: the
   // template is rendered in place of the default layout and the site
   // header/footer are hidden via the `data-themed-post` marker (see globals.css).
@@ -66,6 +76,7 @@ export default async function Post({ params: paramsPromise }: Args) {
 
     return (
       <>
+        <JsonLd data={jsonLd} />
         <PayloadRedirects disableNotFound url={url} />
         {draft && <LivePreviewListener />}
         <div data-themed-post dangerouslySetInnerHTML={{ __html: themedHtml }} />
@@ -78,7 +89,7 @@ export default async function Post({ params: paramsPromise }: Args) {
   const contentHtml = await getPostContentHtml(post)
   const words = contentHtml.replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length
   const readingTime = `${Math.max(1, Math.round(words / 200))} min read`
-  const shareUrl = `${getServerSideURL()}/blogs/${post.slug}`
+  const shareUrl = postUrl
 
   const related = (Array.isArray(post.relatedPosts) ? post.relatedPosts : [])
     .filter((p): p is Post => Boolean(p) && typeof p === 'object')
@@ -95,12 +106,9 @@ export default async function Post({ params: paramsPromise }: Args) {
       }
     })
 
-  const faqs = (Array.isArray(post.faqs) ? post.faqs : [])
-    .filter((f) => f && (f.question || f.answer))
-    .map((f) => ({ answer: f.answer || '', question: f.question || '' }))
-
   return (
     <article className="pt-10 pb-16">
+      <JsonLd data={jsonLd} />
       <PageClient />
 
       {/* Allows redirects for valid pages too */}
@@ -143,7 +151,7 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
   const decodedSlug = decodeURIComponent(slug)
   const post = await queryPostBySlug({ slug: decodedSlug })
 
-  return generateMeta({ doc: post })
+  return generateMeta({ doc: post, url: `${getServerSideURL()}/blogs/${decodedSlug}` })
 }
 
 const queryPostBySlug = cache(async ({ slug }: { slug: string }) => {

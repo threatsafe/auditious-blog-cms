@@ -1,25 +1,70 @@
-import { Linkedin, Twitter } from 'lucide-react'
+import { Linkedin } from 'lucide-react'
 import React from 'react'
 
 const MAIN_SITE = 'https://auditious.io'
+
+const SOCIAL_LINKEDIN = 'https://www.linkedin.com/company/auditious/'
+const SOCIAL_X = 'https://x.com/auditiousio'
+
+/** X (formerly Twitter) brand mark. Lucide has no X logo, only a close-cross. */
+const XIcon = ({ className }: { className?: string }) => (
+  <svg aria-hidden="true" className={className} fill="currentColor" viewBox="0 0 24 24">
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+  </svg>
+)
+
+/** Official profiles. `rel="me"` marks them as the same entity as Organization.sameAs. */
+const socials = [
+  { label: 'Auditious on LinkedIn', href: SOCIAL_LINKEDIN, Icon: Linkedin },
+  { label: 'Auditious on X', href: SOCIAL_X, Icon: XIcon },
+]
 
 const cols = [
   {
     title: 'SOC 2',
     links: [
-      'What is SOC 2?',
-      'Type I vs Type II',
-      'SOC 2 Checklist',
-      'Free Gap Assessment',
-      'TSC Controls Guide',
+      { label: 'What is SOC 2?', href: `${MAIN_SITE}/soc/what-is-soc-2` },
+      { label: 'Type I vs Type II', href: `${MAIN_SITE}/soc/type-i-vs-type-ii` },
+      { label: 'SOC 2 Checklist', href: `${MAIN_SITE}/soc/soc-2-checklist` },
+      { label: 'SOC 1 vs SOC 2 vs SOC 3', href: `${MAIN_SITE}/soc/soc-1-vs-soc-2-vs-soc-3` },
     ],
   },
   {
-    title: 'Platform',
-    links: ['Evidence Automation', 'Auditor Portal', 'Trust Center', 'Risk Management', 'Integrations'],
+    title: 'Product',
+    links: [
+      { label: 'Evidence Automation', href: `${MAIN_SITE}/product/evidence-automation` },
+      { label: 'Auditor Portal', href: `${MAIN_SITE}/product/auditor-portal` },
+      { label: 'Risk Management', href: `${MAIN_SITE}/product/risk-management` },
+      { label: 'Integrations', href: `${MAIN_SITE}/product/integrations` },
+    ],
   },
-  { title: 'Company', links: ['About', 'Careers', 'Blog', 'Customers', 'Partners'] },
-  { title: 'Resources', links: ['Documentation', 'API Docs', 'Status Page', 'Security', 'Contact Us'] },
+  {
+    title: 'Resources',
+    links: [
+      { label: 'Documentation', href: `${MAIN_SITE}/resources/documentation` },
+      { label: 'Contact Us', href: `${MAIN_SITE}/#contact` },
+      { label: 'Blog', href: `${MAIN_SITE}/#resources` },
+      { label: 'Glossary', href: `${MAIN_SITE}/resources/glossary` },
+    ],
+  },
+  {
+    title: 'Company',
+    links: [
+      { label: 'Privacy Policy', href: `${MAIN_SITE}/privacy` },
+      { label: 'Terms and Conditions', href: `${MAIN_SITE}/terms` },
+      { label: 'Pricing', href: `${MAIN_SITE}/#pricing` },
+      { label: 'Email Us', href: 'mailto:support@auditious.io' },
+    ],
+  },
+  {
+    title: 'Compare',
+    links: [
+      { label: 'Auditious vs Vanta', href: `${MAIN_SITE}/compare/auditious-vs-vanta` },
+      { label: 'Auditious vs Drata', href: `${MAIN_SITE}/compare/auditious-vs-drata` },
+      { label: 'Auditious vs Secureframe', href: `${MAIN_SITE}/compare/auditious-vs-secureframe` },
+      { label: 'Auditious vs Sprinto', href: `${MAIN_SITE}/compare/auditious-vs-sprinto` },
+    ],
+  },
 ]
 
 export function Footer() {
@@ -75,11 +120,14 @@ export function Footer() {
             </p>
           </div>
           <div className="flex gap-3">
-            {[Linkedin, Twitter].map((Icon, i) => (
+            {socials.map(({ label, href, Icon }) => (
               <a
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-white/70 transition hover:border-emerald-400 hover:bg-emerald-400 hover:text-[#02261C]"
-                href="#"
-                key={i}
+                aria-label={label}
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-white/70 transition hover:border-emerald-400 hover:bg-emerald-400 hover:text-white"
+                href={href}
+                key={href}
+                rel="me noopener noreferrer"
+                target="_blank"
               >
                 <Icon className="h-4 w-4" />
               </a>
@@ -87,18 +135,18 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-8 py-8 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-8 py-8 sm:grid-cols-3 lg:grid-cols-5">
           {cols.map((c) => (
             <div key={c.title}>
               <h4 className="mb-4 text-sm font-bold text-white">{c.title}</h4>
               <ul className="space-y-2.5">
                 {c.links.map((l) => (
-                  <li key={l}>
+                  <li key={l.label}>
                     <a
                       className="text-sm text-white/60 transition-colors hover:text-emerald-400"
-                      href="#"
+                      href={l.href}
                     >
-                      {l}
+                      {l.label}
                     </a>
                   </li>
                 ))}
@@ -108,18 +156,7 @@ export function Footer() {
         </div>
 
         <div className="flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-5 text-xs text-white/50 sm:flex-row">
-          <p>© 2025 Auditious Inc. All rights reserved.</p>
-          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
-            <a className="hover:text-emerald-400" href={`${MAIN_SITE}/privacy`}>
-              Privacy Policy
-            </a>
-            <a className="hover:text-emerald-400" href={`${MAIN_SITE}/terms`}>
-              Terms of Service
-            </a>
-            <a className="hover:text-emerald-400" href="#">
-              SOC 2 Report
-            </a>
-          </div>
+          <p>© 2026 Auditious All rights reserved.</p>
         </div>
       </div>
     </footer>
