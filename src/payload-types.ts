@@ -216,6 +216,12 @@ export interface Page {
      */
     image?: (number | null) | Media;
     description?: string | null;
+    noindex?: boolean | null;
+    nofollow?: boolean | null;
+    /**
+     * Optional. Overrides the canonical URL for this page. Leave blank to use the default page URL.
+     */
+    canonicalURL?: string | null;
   };
   publishedAt?: string | null;
   /**
@@ -277,6 +283,12 @@ export interface Post {
      */
     image?: (number | null) | Media;
     description?: string | null;
+    noindex?: boolean | null;
+    nofollow?: boolean | null;
+    /**
+     * Optional. Overrides the canonical URL for this page. Leave blank to use the default page URL.
+     */
+    canonicalURL?: string | null;
   };
   publishedAt?: string | null;
   /**
@@ -1200,6 +1212,9 @@ export interface PagesSelect<T extends boolean = true> {
         title?: T;
         image?: T;
         description?: T;
+        noindex?: T;
+        nofollow?: T;
+        canonicalURL?: T;
       };
   publishedAt?: T;
   generateSlug?: T;
@@ -1317,6 +1332,9 @@ export interface PostsSelect<T extends boolean = true> {
         title?: T;
         image?: T;
         description?: T;
+        noindex?: T;
+        nofollow?: T;
+        canonicalURL?: T;
       };
   publishedAt?: T;
   notifySubscribersOnPublish?: T;

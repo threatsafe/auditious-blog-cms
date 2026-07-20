@@ -4,6 +4,7 @@ import type { Post } from '../../payload-types'
 
 import {
   BlocksFeature,
+  EXPERIMENTAL_TableFeature,
   FixedToolbarFeature,
   HeadingFeature,
   HorizontalRuleFeature,
@@ -34,6 +35,8 @@ import {
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
 import { slugField } from 'payload'
+
+import { seoControlFields } from '../../fields/seoControls'
 
 export const Posts: CollectionConfig<'posts'> = {
   slug: 'posts',
@@ -121,6 +124,9 @@ export const Posts: CollectionConfig<'posts'> = {
 
                     UnorderedListFeature(),
                     OrderedListFeature(),
+                    // Tables whose cells accept the editor's other features
+                    // (text, images/uploads, lists, etc.).
+                    EXPERIMENTAL_TableFeature(),
                     TextStateFeature({ state: { fontSize: FONT_SIZE_STATES } }),
                   ]
                 },
@@ -247,6 +253,7 @@ export const Posts: CollectionConfig<'posts'> = {
               titlePath: 'meta.title',
               descriptionPath: 'meta.description',
             }),
+            ...seoControlFields,
           ],
         },
       ],

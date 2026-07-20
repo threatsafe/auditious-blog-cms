@@ -8,7 +8,7 @@ const FRAMEWORKS = ['Compliance', 'SOC 2', 'HIPAA', 'ISO 27001', 'GDPR', 'DPDP']
 export const BlogHero: React.FC = () => (
   <section className="relative overflow-hidden">
     {/* Soft green glow */}
-    <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[620px] bg-[radial-gradient(55%_55%_at_50%_0%,rgba(16,185,129,0.18),transparent_70%)]" />
+    <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-155 bg-[radial-gradient(55%_55%_at_50%_0%,rgba(16,185,129,0.18),transparent_70%)]" />
 
     {/* Decorative flowing lines (tinted for the light hero background) */}
     <FlowingLines
