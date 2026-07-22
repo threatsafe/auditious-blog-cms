@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: Auditious Blog CMS CI
 
 on:
   push:
@@ -22,10 +22,21 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
+          cache: pnpm
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
 
       - name: Install Dependencies
-        run: npm install
+        run: pnpm install --frozen-lockfile
 
-      - name: Build Project
-        run: npm run build
+      - name: Generate Payload Types
+        run: pnpm generate:types
+
+      - name: Run ESLint
+        run: pnpm lint
+
+      - name: Build Next.js Application
+        run: pnpm build
