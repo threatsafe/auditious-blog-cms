@@ -2,38 +2,46 @@ name: Auditious Blog CMS CI
 
 on:
   push:
-    branches: [main, develop]
+    branches:
+      - main
+      - develop
+
   pull_request:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
 
-      - name: Enable Corepack
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.17.1
+          run_install: false
+
+      - name: Verify Versions
         run: |
-          corepack enable
-          corepack prepare pnpm@latest --activate
+          node -v
+          pnpm -v
 
-      - name: Verify pnpm
-        run: pnpm --version
-
-      - name: Install dependencies
+      - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Generate Payload Types
         run: pnpm generate:types
 
-      - name: Lint
+      - name: Run ESLint
         run: pnpm lint
 
-      - name: Build
+      - name: Build Next.js Application
         run: pnpm build
