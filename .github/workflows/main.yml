@@ -15,12 +15,18 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      # Required for Payload to initialize during `generate:types` and `build`.
-      # Add PAYLOAD_SECRET under Settings > Secrets and variables > Actions.
-      PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
-      # SQLite DB file is committed to the repo, so just point at it.
       DATABASE_URL: file:./auditious-blog-cms.db
-      NEXT_PUBLIC_SERVER_URL: http://localhost:3000
+      NEXT_PUBLIC_SERVER_URL: https://auditious.io
+      PAYLOAD_SECRET: ${{ secrets.SECRET_ENV }}
+      CRON_SECRET: ${{ secrets.SECRET_ENV }}
+      PREVIEW_SECRET: ${{ secrets.SECRET_ENV }}
+    
+      SMTPHOST: ${{ secrets.SECRET_ENV }}
+      SMTPPORT: ${{ secrets.SECRET_ENV }}
+      SMTPSECURE: ${{ secrets.SECRET_ENV }}
+      SMTPUSERNAME: ${{ secrets.SECRET_ENV }}
+      SMTPPASSWORD: ${{ secrets.SECRET_ENV }}
+      SMTPEMAIL: ${{ secrets.SECRET_ENV }}
 
     steps:
       - name: Checkout Repository
