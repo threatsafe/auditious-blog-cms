@@ -14,6 +14,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      # Required for Payload to initialize during `generate:types` and `build`.
+      # Add PAYLOAD_SECRET under Settings > Secrets and variables > Actions.
+      PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
+      # SQLite DB file is committed to the repo, so just point at it.
+      DATABASE_URL: file:./auditious-blog-cms.db
+      NEXT_PUBLIC_SERVER_URL: http://localhost:3000
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
