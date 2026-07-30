@@ -33,7 +33,7 @@ export default buildConfig({
         {
           rel: 'icon',
           type: 'image/x-icon',
-          url: '/favicon.ico',
+          url: '/favicon-logo.ico',
         },
       ],
     },

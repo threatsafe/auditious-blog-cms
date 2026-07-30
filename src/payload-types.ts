@@ -2005,6 +2005,39 @@ export interface TaskSchedulePublish {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TableBlock".
+ */
+export interface TableBlock {
+  /**
+   * Optional caption shown beneath the table. Also read by screen readers.
+   */
+  caption?: string | null;
+  headerRow?: boolean | null;
+  headerColumn?: boolean | null;
+  striped?: boolean | null;
+  rows: {
+    /**
+     * Add one cell per column. Keep the count consistent across rows.
+     */
+    cells: {
+      /**
+       * Plain text. Line breaks are preserved.
+       */
+      content?: string | null;
+      align?: ('left' | 'center' | 'right') | null;
+      background?: ('none' | 'emerald-soft' | 'emerald-solid' | 'muted') | null;
+      colSpan?: number | null;
+      rowSpan?: number | null;
+      id?: string | null;
+    }[];
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'table';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "BannerBlock".
  */
 export interface BannerBlock {

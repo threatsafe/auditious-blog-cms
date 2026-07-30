@@ -29,9 +29,59 @@ const renderCtaLink = (link: any): string => {
   return `<a class="content-cta__link${appearance}" href="${escapeHtml(href)}"${target}>${label}</a>`
 }
 
+// Cell background choices → inline CSS, mirroring the React component's classes
+// so the HTML themes render tables the same way as the site frontend.
+const TABLE_CELL_BACKGROUND_CSS: Record<string, string> = {
+  'emerald-soft': 'background-color:#ecfdf5;',
+  'emerald-solid': 'background-color:#059669;color:#ffffff;',
+  muted: 'background-color:#f1f5f9;',
+}
+
+// Renders a structured Table block to a self-contained HTML string (inline
+// styles so it looks right even without theme CSS).
+const renderTableBlock = (fields: any): string => {
+  const rows: any[] = Array.isArray(fields?.rows) ? fields.rows : []
+  if (rows.length === 0) return ''
+
+  const headerRow = fields?.headerRow !== false
+  const headerColumn = Boolean(fields?.headerColumn)
+  const striped = fields?.striped !== false
+
+  const renderCell = (cell: any, cellIndex: number, isHeaderRow: boolean): string => {
+    const isHeaderColumnCell = headerColumn && cellIndex === 0
+    const isHeader = isHeaderRow || isHeaderColumnCell
+    const tag = isHeader ? 'th' : 'td'
+    const scope = isHeaderRow ? ' scope="col"' : isHeaderColumnCell ? ' scope="row"' : ''
+    const align = ['left', 'center', 'right'].includes(cell?.align) ? cell.align : 'left'
+    const colSpan = Number(cell?.colSpan) > 1 ? ` colspan="${Number(cell.colSpan)}"` : ''
+    const rowSpan = Number(cell?.rowSpan) > 1 ? ` rowspan="${Number(cell.rowSpan)}"` : ''
+    let style = `border:1px solid #e2e8f0;padding:8px 16px;vertical-align:top;text-align:${align};white-space:pre-line;`
+    if (isHeader) style += 'font-weight:600;'
+    style += TABLE_CELL_BACKGROUND_CSS[cell?.background] || ''
+    return `<${tag}${scope}${colSpan}${rowSpan} style="${style}">${escapeHtml(cell?.content || '')}</${tag}>`
+  }
+
+  const renderRow = (row: any, bodyIndex: number, isHeaderRow: boolean): string => {
+    const cells: any[] = Array.isArray(row?.cells) ? row.cells : []
+    const stripe =
+      !isHeaderRow && striped && bodyIndex % 2 === 1 ? ' style="background-color:#f8fafc;"' : ''
+    return `<tr${stripe}>${cells.map((c, i) => renderCell(c, i, isHeaderRow)).join('')}</tr>`
+  }
+
+  const head = headerRow ? rows[0] : null
+  const body = headerRow ? rows.slice(1) : rows
+  const caption = fields?.caption
+    ? `<caption style="caption-side:bottom;padding-top:8px;text-align:left;font-size:0.875rem;color:#64748b;">${escapeHtml(fields.caption)}</caption>`
+    : ''
+  const thead = head ? `<thead>${renderRow(head, 0, true)}</thead>` : ''
+  const tbody = `<tbody>${body.map((r, i) => renderRow(r, i, false)).join('')}</tbody>`
+
+  return `<div class="content-table-wrap" style="overflow-x:auto;margin:2rem 0;"><table class="content-table" style="border-collapse:collapse;width:100%;font-size:0.95rem;">${caption}${thead}${tbody}</table></div>`
+}
+
 // Builds the HTML converters used to turn Lexical post content into an HTML
 // string. Extends the default converters with the custom blocks that can be
-// embedded in post content (banner, code, mediaBlock) plus cta for reuse.
+// embedded in post content (banner, code, mediaBlock, table) plus cta for reuse.
 const buildConverters = (): HTMLConvertersFunctionAsync => {
   const converters: HTMLConvertersFunctionAsync = ({ defaultConverters }) => ({
     ...defaultConverters,
@@ -80,6 +130,7 @@ const buildConverters = (): HTMLConvertersFunctionAsync => {
         }
         return ''
       },
+      table: ({ node }: any) => renderTableBlock(node.fields),
     },
   })
 
