@@ -1,0 +1,45 @@
+# Auditious — Knowledge Hub
+
+> Auditious is a compliance automation platform — the fastest path to SOC 2, ISO 27001, and continuous compliance. This site is the Auditious Knowledge Hub: guides, playbooks, and expert insights on security frameworks, evidence automation, and audit readiness, written for founders, security engineers, and GRC teams.
+
+The Knowledge Hub is built on Payload CMS + Next.js and served from https://auditious.io. Articles live under `/blogs`, are grouped by category (e.g. SOC 2, ISO 27001, Evidence Automation, Continuous Compliance), and each post includes structured data (Article, Breadcrumb, FAQ); product, pricing, and comparison pages live on the same domain. The `/admin` path is the Payload CMS admin panel and is not intended for indexing or crawling.
+
+## Knowledge Hub
+
+- [Blog — Auditious Knowledge Hub](https://auditious.io/blogs): Main listing of guides and playbooks on SOC 2, ISO 27001, evidence automation, and continuous compliance.
+- [Search](https://auditious.io/search): Full-text search across every published article.
+
+## SOC 2 Guides
+
+- [What is SOC 2?](https://auditious.io/soc/what-is-soc-2): Introduction to the SOC 2 framework and Trust Services Criteria.
+- [SOC 2 Type I vs Type II](https://auditious.io/soc/type-i-vs-type-ii): How the two report types differ and which one you need.
+- [SOC 2 Checklist](https://auditious.io/soc/soc-2-checklist): Step-by-step readiness checklist for an audit.
+- [SOC 1 vs SOC 2 vs SOC 3](https://auditious.io/soc/soc-1-vs-soc-2-vs-soc-3): How the SOC report families compare.
+
+## Product
+
+- [Evidence Automation](https://auditious.io/product/evidence-automation): Automatically collect and map audit evidence.
+- [Auditor Portal](https://auditious.io/product/auditor-portal): Shared workspace for auditors and audit prep.
+- [Risk Management](https://auditious.io/product/risk-management): Track, assess, and remediate risk.
+- [Integrations](https://auditious.io/product/integrations): Connect your cloud, HR, and identity stack.
+
+## Compare
+
+- [Auditious vs Vanta](https://auditious.io/compare/auditious-vs-vanta)
+- [Auditious vs Drata](https://auditious.io/compare/auditious-vs-drata)
+- [Auditious vs Secureframe](https://auditious.io/compare/auditious-vs-secureframe)
+- [Auditious vs Sprinto](https://auditious.io/compare/auditious-vs-sprinto)
+
+## Company
+
+- [Documentation](https://auditious.io/resources/documentation): Product and integration docs.
+- [Glossary](https://auditious.io/resources/glossary): Compliance and security terminology.
+- [Pricing](https://auditious.io/#pricing)
+- [Contact](https://auditious.io/#contact)
+- [Privacy Policy](https://auditious.io/privacy)
+- [Terms and Conditions](https://auditious.io/terms)
+
+## Optional
+
+- [Posts sitemap](https://auditious.io/posts-sitemap.xml): Complete, always-current list of every published article.
+- [Pages sitemap](https://auditious.io/pages-sitemap.xml): Complete list of site pages.

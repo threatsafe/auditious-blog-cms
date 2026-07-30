@@ -14,18 +14,37 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      DATABASE_URL: file:./auditious-blog-cms.db
+      NEXT_PUBLIC_SERVER_URL: https://auditious.io
+      PAYLOAD_SECRET: ${{ secrets.SECRET_ENV }}
+      CRON_SECRET: ${{ secrets.SECRET_ENV }}
+      PREVIEW_SECRET: ${{ secrets.SECRET_ENV }}
+    
+      SMTPHOST: ${{ secrets.SECRET_ENV }}
+      SMTPPORT: ${{ secrets.SECRET_ENV }}
+      SMTPSECURE: ${{ secrets.SECRET_ENV }}
+      SMTPUSERNAME: ${{ secrets.SECRET_ENV }}
+      SMTPPASSWORD: ${{ secrets.SECRET_ENV }}
+      SMTPEMAIL: ${{ secrets.SECRET_ENV }}
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
+          cache: pnpm
 
       - name: Install Dependencies
-        run: npm install
+        run: pnpm install --frozen-lockfile
 
       - name: Generate Payload Types
         run: npm run generate:types
@@ -34,4 +53,4 @@ jobs:
         run: echo "Skipping ESLint"
 
       - name: Build Application
-        run: npm run build
+        run: pnpm run build
