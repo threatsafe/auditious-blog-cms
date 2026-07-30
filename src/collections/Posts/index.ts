@@ -23,6 +23,7 @@ import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
 import { Banner } from '../../blocks/Banner/config'
 import { Code } from '../../blocks/Code/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
+import { Table } from '../../blocks/Table/config'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
 import { notifySubscribers } from './hooks/notifySubscribers'
 import { populateAuthors } from './hooks/populateAuthors'
@@ -118,15 +119,15 @@ export const Posts: CollectionConfig<'posts'> = {
                   return [
                     ...rootFeatures,
                     HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-                    BlocksFeature({ blocks: [Banner, Code, MediaBlock] }),
+                    // Preferred way to author tables: the structured Table block.
+                    BlocksFeature({ blocks: [Banner, Code, MediaBlock, Table] }),
                     FixedToolbarFeature(),
                     InlineToolbarFeature(),
                     HorizontalRuleFeature(),
 
                     UnorderedListFeature(),
                     OrderedListFeature(),
-                    // Tables whose cells accept the editor's other features
-                    // (text, images/uploads, lists, etc.).
+                    // Kept registered so legacy inline tables still load/edit.
                     EXPERIMENTAL_TableFeature(),
                     TextStateFeature({
                       state: { fontSize: FONT_SIZE_STATES, color: EMERALD_COLOR_STATES },

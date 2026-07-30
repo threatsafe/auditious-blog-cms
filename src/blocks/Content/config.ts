@@ -1,6 +1,7 @@
 import type { Block, Field } from 'payload'
 
 import {
+  BlocksFeature,
   EXPERIMENTAL_TableFeature,
   FixedToolbarFeature,
   HeadingFeature,
@@ -9,6 +10,7 @@ import {
 } from '@payloadcms/richtext-lexical'
 
 import { link } from '@/fields/link'
+import { Table } from '../Table/config'
 
 const columnFields: Field[] = [
   {
@@ -44,6 +46,9 @@ const columnFields: Field[] = [
           HeadingFeature({ enabledHeadingSizes: ['h2', 'h3', 'h4'] }),
           FixedToolbarFeature(),
           InlineToolbarFeature(),
+          // Preferred way to author tables: the structured Table block.
+          BlocksFeature({ blocks: [Table] }),
+          // Kept registered so legacy inline tables still load/edit.
           EXPERIMENTAL_TableFeature(),
         ]
       },

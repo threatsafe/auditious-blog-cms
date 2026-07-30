@@ -32,7 +32,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <InitTheme />
         <JsonLd data={getSiteJsonLd()} />
         {/* updated */}
-        <link href="/favicon.ico" rel="icon" sizes="any" />
+        <link href="/favicon-logo.ico" rel="icon" sizes="any" />
         {blogFont.googleHref && (
           <>
             <link href="https://fonts.googleapis.com" rel="preconnect" />
