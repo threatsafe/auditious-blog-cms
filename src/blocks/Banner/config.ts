@@ -8,6 +8,7 @@ import {
 } from '@payloadcms/richtext-lexical'
 
 import { FONT_SIZE_STATES } from '../../fields/fontSizes'
+import { EMERALD_COLOR_STATES } from '../../fields/emeraldColors'
 
 export const Banner: Block = {
   slug: 'banner',
@@ -33,7 +34,9 @@ export const Banner: Block = {
             ...rootFeatures,
             FixedToolbarFeature(),
             InlineToolbarFeature(),
-            TextStateFeature({ state: { fontSize: FONT_SIZE_STATES } }),
+            TextStateFeature({
+              state: { fontSize: FONT_SIZE_STATES, color: EMERALD_COLOR_STATES },
+            }),
           ]
         },
       }),

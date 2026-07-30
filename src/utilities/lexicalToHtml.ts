@@ -5,6 +5,7 @@ import {
 } from '@payloadcms/richtext-lexical/html-async'
 
 import { fontSizeFromState } from '@/fields/fontSizes'
+import { emeraldColorFromState } from '@/fields/emeraldColors'
 import { escapeHtml } from './escapeHtml'
 
 // Renders a CTA link node to an <a> tag, resolving internal references to URLs.
@@ -39,7 +40,11 @@ const buildConverters = (): HTMLConvertersFunctionAsync => {
       const convert = defaultConverters.text as ((a: any) => Promise<string> | string) | undefined
       const base = convert ? await convert(args) : escapeHtml(args.node.text)
       const fontSize = fontSizeFromState(args.node?.$?.fontSize)
-      return fontSize ? `<span style="font-size:${fontSize}">${base}</span>` : base
+      const color = emeraldColorFromState(args.node?.$?.color)
+      const style = [fontSize ? `font-size:${fontSize}` : '', color ? `color:${color}` : '']
+        .filter(Boolean)
+        .join(';')
+      return style ? `<span style="${style}">${base}</span>` : base
     },
     blocks: {
       banner: async ({ node }: any) => {

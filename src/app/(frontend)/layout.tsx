@@ -31,6 +31,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <head>
         <InitTheme />
         <JsonLd data={getSiteJsonLd()} />
+        {/* updated */}
         <link href="/favicon.ico" rel="icon" sizes="any" />
         {blogFont.googleHref && (
           <>

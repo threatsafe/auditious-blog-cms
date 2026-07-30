@@ -16,6 +16,7 @@ import {
 } from '@payloadcms/richtext-lexical'
 
 import { FONT_SIZE_STATES } from '../../fields/fontSizes'
+import { EMERALD_COLOR_STATES } from '../../fields/emeraldColors'
 
 import { authenticated } from '../../access/authenticated'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
@@ -127,7 +128,9 @@ export const Posts: CollectionConfig<'posts'> = {
                     // Tables whose cells accept the editor's other features
                     // (text, images/uploads, lists, etc.).
                     EXPERIMENTAL_TableFeature(),
-                    TextStateFeature({ state: { fontSize: FONT_SIZE_STATES } }),
+                    TextStateFeature({
+                      state: { fontSize: FONT_SIZE_STATES, color: EMERALD_COLOR_STATES },
+                    }),
                   ]
                 },
               }),

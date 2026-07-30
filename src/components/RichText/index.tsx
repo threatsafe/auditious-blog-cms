@@ -13,6 +13,7 @@ import {
 
 import { CodeBlock, CodeBlockProps } from '@/blocks/Code/Component'
 import { fontSizeFromState } from '@/fields/fontSizes'
+import { emeraldColorFromState } from '@/fields/emeraldColors'
 
 import type {
   BannerBlock as BannerBlockProps,
@@ -43,8 +44,15 @@ const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) 
   text: (args) => {
     const convert = defaultConverters.text as ((a: unknown) => React.ReactNode) | undefined
     const rendered = convert ? convert(args) : args.node.text
-    const fontSize = fontSizeFromState((args.node as { $?: { fontSize?: string } }).$?.fontSize)
-    return fontSize ? <span style={{ fontSize }}>{rendered}</span> : rendered
+    const state = (args.node as { $?: { fontSize?: string; color?: string } }).$
+    const fontSize = fontSizeFromState(state?.fontSize)
+    const color = emeraldColorFromState(state?.color)
+    if (!fontSize && !color) return rendered
+    return (
+      <span style={{ ...(fontSize ? { fontSize } : {}), ...(color ? { color } : {}) }}>
+        {rendered}
+      </span>
+    )
   },
   blocks: {
     banner: ({ node }) => <BannerBlock className="col-start-2 mb-4" {...node.fields} />,
