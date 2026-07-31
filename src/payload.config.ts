@@ -92,6 +92,10 @@ export default buildConfig({
     client: {
       url: process.env.DATABASE_URL || '',
     },
+    // Auto-sync the DB schema to the models on startup (additive; preserves data).
+    // Needed because this project ships its SQLite DB instead of using migrations,
+    // so a live DB can lag the code's schema after a deploy.
+    push: true,
   }),
   collections: [Pages, Posts, Media, Categories, Users, Themes, Subscribers],
   cors: [getServerSideURL()].filter(Boolean),
