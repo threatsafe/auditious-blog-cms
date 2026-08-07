@@ -93,6 +93,20 @@ export const Posts: CollectionConfig<'posts'> = {
               name: 'heroImage',
               type: 'upload',
               relationTo: 'media',
+              label: 'Hero Image',
+              admin: {
+                description: 'Large banner image shown at the top of the post page.',
+              },
+            },
+            {
+              name: 'thumbnail',
+              type: 'upload',
+              relationTo: 'media',
+              label: 'Thumbnail',
+              admin: {
+                description:
+                  'Card image used in blog listings and related-post grids. If left empty, the hero image is used.',
+              },
             },
             {
               name: 'contentType',
@@ -241,6 +255,24 @@ export const Posts: CollectionConfig<'posts'> = {
               descriptionPath: 'meta.description',
               imagePath: 'meta.image',
             }),
+            {
+              name: 'focusKeyword',
+              type: 'text',
+              label: 'Focus Keyword',
+              admin: {
+                description:
+                  'The main keyword or phrase this post should rank for. Drives the SEO analysis below.',
+              },
+            },
+            {
+              name: 'seoAnalysis',
+              type: 'ui',
+              admin: {
+                components: {
+                  Field: '@/components/SeoAnalysis',
+                },
+              },
+            },
             MetaTitleField({
               hasGenerateFn: true,
             }),

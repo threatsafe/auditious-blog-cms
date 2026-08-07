@@ -19,7 +19,7 @@ export default function NewsletterUnsubscribedPage() {
         </p>
         <Link
           className="mt-6 inline-flex items-center justify-center rounded-lg bg-emerald-500 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-emerald-600"
-          href="/blogs"
+          href="/"
         >
           Back to the blog
         </Link>

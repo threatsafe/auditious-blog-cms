@@ -182,7 +182,7 @@ export const BlogSidebar: React.FC<Props> = ({ related, shareUrl, title }) => {
           </ul>
           <Link
             className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-emerald-600 hover:gap-2"
-            href="/blogs"
+            href="/"
           >
             View all blogs
             <svg

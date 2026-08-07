@@ -75,11 +75,11 @@ const getArticleSchema = (post: Post, url: string): JsonLdObject => {
 const getBreadcrumbSchema = (post: Post, url: string): JsonLdObject => {
   const site = getServerSideURL()
   return {
+    // The blog listing is the site homepage, so Home and Blog are the same URL.
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home', item: site },
-      { '@type': 'ListItem', position: 2, name: 'Blog', item: `${site}/blogs` },
-      { '@type': 'ListItem', position: 3, name: post.title, item: url },
+      { '@type': 'ListItem', position: 1, name: 'Blog', item: site },
+      { '@type': 'ListItem', position: 2, name: post.title, item: url },
     ],
   }
 }
