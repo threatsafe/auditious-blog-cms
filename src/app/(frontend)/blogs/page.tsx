@@ -41,6 +41,7 @@ export default async function Page() {
         content: true,
         contentType: true,
         heroImage: true,
+        thumbnail: true,
         htmlContent: true,
         meta: true,
         publishedAt: true,

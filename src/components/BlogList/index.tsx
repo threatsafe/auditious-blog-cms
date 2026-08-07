@@ -6,7 +6,7 @@ import React from 'react'
 
 export type BlogListPost = Pick<
   Post,
-  'categories' | 'heroImage' | 'meta' | 'publishedAt' | 'slug' | 'title'
+  'categories' | 'heroImage' | 'meta' | 'publishedAt' | 'slug' | 'thumbnail' | 'title'
 >
 
 const formatDate = (value?: null | string): string =>
@@ -30,6 +30,7 @@ export const BlogList: React.FC<{ posts: BlogListPost[] }> = ({ posts }) => {
           const href = `/blogs/${post.slug}`
 
           const cover =
+            (post.thumbnail && typeof post.thumbnail === 'object' ? post.thumbnail : null) ||
             (post.heroImage && typeof post.heroImage === 'object' ? post.heroImage : null) ||
             (post.meta?.image && typeof post.meta.image === 'object' ? post.meta.image : null)
 

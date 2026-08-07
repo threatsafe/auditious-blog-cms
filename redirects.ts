@@ -14,12 +14,17 @@ export const redirects: NextConfig['redirects'] = async () => {
     source: '/:path((?!ie-incompatible.html$).*)', // all pages except the incompatibility page
   }
 
-  // The blog moved from /posts to /blogs. Preserve inbound links / SEO with 301s.
-  // The wildcard rule covers article (/posts/:slug) and pagination (/posts/page/N).
-  const postsToBlogs = [
-    { source: '/posts', destination: '/blogs', permanent: true },
+  // The blog listing now lives at the site root (`/`). Redirect the old `/blogs`
+  // index there. Individual articles stay under `/blogs/:slug`, so this is an
+  // EXACT match on `/blogs` only (no `:path*`).
+  const blogsToRoot = [{ source: '/blogs', destination: '/', permanent: true }]
+
+  // The blog moved from /posts to /blogs (and the index to `/`). Preserve inbound
+  // links / SEO with 301s. Articles/pagination keep living under `/blogs/...`.
+  const postsRedirects = [
+    { source: '/posts', destination: '/', permanent: true },
     { source: '/posts/:path*', destination: '/blogs/:path*', permanent: true },
   ]
 
-  return [...postsToBlogs, internetExplorerRedirect]
+  return [...blogsToRoot, ...postsRedirects, internetExplorerRedirect]
 }

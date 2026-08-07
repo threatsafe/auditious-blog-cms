@@ -29,11 +29,12 @@ const findFirstMedia = (node: any): Media | null => {
 
 /**
  * Resolves a cover image for a post, pulling it from the blog itself:
- * hero image → SEO meta image → the first image embedded in the post body.
+ * thumbnail → hero image → SEO meta image → the first image embedded in the body.
  */
 export const getPostImage = (
-  post: Pick<Post, 'content' | 'heroImage' | 'meta'>,
+  post: Pick<Post, 'content' | 'heroImage' | 'meta' | 'thumbnail'>,
 ): Media | null => {
+  if (post.thumbnail && typeof post.thumbnail === 'object') return post.thumbnail
   if (post.heroImage && typeof post.heroImage === 'object') return post.heroImage
   if (post.meta?.image && typeof post.meta.image === 'object') return post.meta.image
 

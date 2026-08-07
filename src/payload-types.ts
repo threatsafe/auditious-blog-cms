@@ -240,7 +240,14 @@ export interface Page {
 export interface Post {
   id: number;
   title: string;
+  /**
+   * Large banner image shown at the top of the post page.
+   */
   heroImage?: (number | null) | Media;
+  /**
+   * Card image used in blog listings and related-post grids. If left empty, the hero image is used.
+   */
+  thumbnail?: (number | null) | Media;
   /**
    * Choose how to author the post body: the rich text editor, or raw HTML (paste or upload an .html file).
    */
@@ -277,6 +284,10 @@ export interface Post {
       }[]
     | null;
   meta?: {
+    /**
+     * The main keyword or phrase this post should rank for. Drives the SEO analysis below.
+     */
+    focusKeyword?: string | null;
     title?: string | null;
     /**
      * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
@@ -1314,6 +1325,7 @@ export interface FormBlockSelect<T extends boolean = true> {
 export interface PostsSelect<T extends boolean = true> {
   title?: T;
   heroImage?: T;
+  thumbnail?: T;
   contentType?: T;
   content?: T;
   htmlContent?: T;
@@ -1329,6 +1341,7 @@ export interface PostsSelect<T extends boolean = true> {
   meta?:
     | T
     | {
+        focusKeyword?: T;
         title?: T;
         image?: T;
         description?: T;
